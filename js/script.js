@@ -136,9 +136,10 @@ function enable(index){
 
 // this event makes sure the credit card option is selected as soon as the page starts
 $('option[value="credit card"]').focus().prop('selected', 'selected');
-
+//this event hides the paypal and bitcoin options until its call 
 $('#credit-card').nextAll().hide();
 
+//this event triggers when one of the options are selected and then their payment options are shown
 $('#payment').on('change', function (){
 	const paymentValue = $('#payment').val();
 	if (paymentValue === 'paypal'){
@@ -156,6 +157,8 @@ $('#payment').on('change', function (){
 	}
 });
 
+
+// these variables take the values of the inputs that are on the form
 const activity = $('input:checkbox').val();
 const email = $('#mail').val();
 const name = $('#name').val();
@@ -163,7 +166,7 @@ const cc = $('#cc-num').val();
 const zip = $('#zip').val();
 const cvv = $('#cvv').val();
 
-
+//these variables, using jquery, are created for the errors. in which they will be appended when they are called
 const emailError = $('<span>Please Enter A Valid Email Address</span>').css('color', 'red');
 const nameError = $('<span>Please Enter Your Name</span>').css('color', 'red');
 const activityError = $('<span>Please choose at least one activity</span>').css('color', 'red');
@@ -172,11 +175,12 @@ const ccNumber = $('<span> Please enter a number that is at least 13-16 digits l
 const ccZip = $('<span>Pleas enter a 5 digit zip code</span>').css('color', 'red');
 const cvvError = $('<span>Please enter a 3-4 digit cvv</span>').css('color', 'red');
 
-
+//this function makes sure the email entered is a valid email 
 function checkValidEmail(checkemail) {
 	let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	return re.test(checkemail);
 }
+// this function returns a boolean, in which if false the error message will appear 
 function emailValidate(email){
 	if (checkValidEmail(email)){
 		return true;
@@ -185,7 +189,7 @@ function emailValidate(email){
 		return false;
 	}
 }
-
+// this function makes sure a name is inputed if not a error message will appear 
 function nameValidate(name){
 	if (name === ''){
 		$('#name').before(nameError);
@@ -195,7 +199,7 @@ function nameValidate(name){
 		return true;
 	}
 }
-
+//this function makes sure an acitivity at least one is chosen unless a error message appears 
 function activityValidate(activity){
 	if (activity === 'checked'){
 		return true;
@@ -204,7 +208,7 @@ function activityValidate(activity){
 		return false;
 	}
 }
-
+// this makes sure a valid email is entered unless an error message will appear
 function ccValidate(cc){
 	if (cc.length < 16 && cc.length > 13){
 		return true;
@@ -216,7 +220,7 @@ function ccValidate(cc){
 		return false;
 	}
 }
-
+// this makes sure a valid zip code is entered unless an error message will appear 
 function zipValidate(zip){
 	if (zip.length === 5){
 		return true;
@@ -225,7 +229,7 @@ function zipValidate(zip){
 		return false;
 	}
 }
-
+// this makes sure a valid cvv code is entered unless an error message will appear 
 function cvvValidate(cvv){
 	if (cvv.length > 3 && cvv.length <= 4){
 		return true;
@@ -234,14 +238,15 @@ function cvvValidate(cvv){
 		return false;
 	}	
 }
-
+// this function runs the validation functions and returns a boolean value
 function formValiation(){
 	return emailValidate(email) && nameValidate(name)&&
 	activityValidate(activity)&&ccValidate(cc)&&zipValidate(zip)&&
 	cvvValidate(cvv)
 }
 
-
+// this event runs a functions that checks the boolean of the form validation function and then checks if its true or false 
+// after that depending on what is the boolean value the if statement will run
 $('button').click(function(e){
 	e.preventDefault();
 	if (formValiation() === true){
@@ -262,6 +267,7 @@ $('button').click(function(e){
 		cvvValidate(cvv);
 	}
 });
+
 
 
 
