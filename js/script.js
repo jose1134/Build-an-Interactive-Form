@@ -170,7 +170,6 @@ const cvv = $('#cvv').val();
 const emailError = $('<span>Please Enter A Valid Email Address</span>').css('color', 'red');
 const nameError = $('<span>Please Enter Your Name</span>').css('color', 'red');
 const activityError = $('<span>Please choose at least one activity</span>').css('color', 'red');
-const ccError = $('<span>Please Enter Valid Credit Card Number </span>').css('color', 'red');
 const ccNumber = $('<span> Please enter a number that is at least 13-16 digits long</span>').css('color', 'red');
 const ccZip = $('<span>Pleas enter a 5 digit zip code</span>').css('color', 'red');
 const cvvError = $('<span>Please enter a 3-4 digit cvv</span>').css('color', 'red');
@@ -212,11 +211,11 @@ function activityValidate(activity){
 function ccValidate(cc){
 	if (cc.length < 16 && cc.length > 13){
 		return true;
-	} else if (cc.length > 16 || cc.length < 13){
+	} else if (cc.length > 16 || cc.length < 13 ){
 		$('#cc-num').before(ccNumber);
 		return false;
-	} else {
-		$('#cc-num').before(ccError);
+	} else if (typeof email === 'number'){
+		$('#cc-num').before(ccNumber);
 		return false;
 	}
 }
