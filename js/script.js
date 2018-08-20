@@ -1,22 +1,7 @@
 $('#name').focus(); // while using jquery this makes sure the name input field is the first one in focus when the page starts up 
 
-//this function creates the elements of the fieldset and the text area and places them before the shirt div and hides the elements until its called
-function otherOptionElement(){
-	const shirtClass = document.querySelector('.shirt');
-	const formElement = document.querySelector('.shirt').parentNode;
-	const textField = document.createElement('fieldset');
-	textField.id = 'other-title';
-	formElement.insertBefore(textField, shirtClass);
-	const optionText = document.createElement('textarea');
-	document.querySelector('#other-title').appendChild(optionText);
-	optionText.placeholder = 'Your Job Role';
-	document.querySelector('#other-title').style.display = 'none';
-}
-
-//this calls the function for the element creator
-otherOptionElement();
-
-
+//this hides the input text area until the other option is selected
+document.querySelector('#other-title').style.display = 'none';
 //using this event handler it will read the value of the selection and if other is chosen then the text area is shown if not then it disappears 
 document.querySelector('#title').onchange = function (){
 	const jobValues = document.getElementById('title').value;
@@ -27,9 +12,6 @@ document.querySelector('#title').onchange = function (){
 	}
 };
 
-//this takes the shirt color options and stores it into a variable
-const colorOption = $('#color');
-
 //these variables consist the options given for the puns and love shirts 
 const jsPuns = $('<option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option><option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option> <option value="gold">Gold (JS Puns shirt only)</option> ');
 const jsLove = $('<option value="tomato">Tomato (I &#9829; JS shirt only)</option><option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option> <option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option> ');
@@ -37,6 +19,9 @@ const jsLove = $('<option value="tomato">Tomato (I &#9829; JS shirt only)</optio
 
 //this hides the color option until the deisgn function goes into effect 
 document.querySelector('#colors-js-puns').style.display = 'none';
+
+//this takes the shirt color options and stores it into a variable
+const colorOption = $('#color');
 
 //this event handler will trigger based on what design is chosen and then it seperates the options based on the design 
 document.querySelector('#design').onchange = function (){
@@ -158,38 +143,33 @@ $('#payment').on('change', function (){
 });
 
 
-// these variables take the values of the inputs that are on the form
-const activity = $('input:checkbox').val();
-const email = $('#mail').val();
-const name = $('#name').val();
-const cc = $('#cc-num').val();
-const zip = $('#zip').val();
-const cvv = $('#cvv').val();
+
 
 //these variables, using jquery, are created for the errors. in which they will be appended when they are called
 const emailError = $('<span>Please Enter A Valid Email Address</span>').css('color', 'red');
-const nameError = $('<span>Please Enter Your Name</span>').css('color', 'red');
+const nameError = $('<span>Please Enter Your Full First Name and Last Name</span>').css('color', 'red');
 const activityError = $('<span>Please choose at least one activity</span>').css('color', 'red');
 const ccNumberError = $('<span> Please enter a number that is at least 13-16 digits long</span>').css('color', 'red');
-const ccZip = $('<span>Pleas enter a 5 digit zip code</span>').css('color', 'red');
+const ccZipError = $('<span>Pleas enter a 5 digit zip code</span>').css('color', 'red');
 const cvvError = $('<span>Please enter a 3-4 digit cvv</span>').css('color', 'red');
 
-//this function makes sure the email entered is a valid email 
-function checkValidEmail(checkemail) {
+
+//this function makes sure the email entered is a valid email
+//it also returns a boolean, in which if false the error message will appear 
+function checkValidEmail() {
+	const email = $('#mail').val();
 	let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	return re.test(checkemail);
-}
-// this function returns a boolean, in which if false the error message will appear 
-function emailValidate(email){
-	if (checkValidEmail(email)){
+	if (re.test(email) === true){
+		emailError.hide();
 		return true;
-	} else {
+	} else{
 		$('#mail').before(emailError);
 		return false;
-	}
+	}	
 }
 // this function makes sure a name is inputed if not a error message will appear 
-function nameValidate(name){
+function nameValidate(){
+	name = $('#name').val();
 	if (name === ''){
 		$('#name').before(nameError);
 		return false;
@@ -199,38 +179,51 @@ function nameValidate(name){
 	}
 }
 //this function makes sure an acitivity at least one is chosen unless a error message appears 
-function activityValidate(activity){
-	if (activity === 'checked'){
-		return true;
-	} else {
+function activityValidate(){
+	let checkedBox = $('input:checked').length;
+	if (!checkedBox){
 		$('.activities').prepend(activityError);
 		return false;
+	} else {
+		return true;
 	}
 }
 // this makes sure a valid email is entered unless an error message will appear
-function ccValidate(cc){
-	if (cc.length < 16 && cc.length > 13){
-		return true;
+function ccValidate(){
+	let cc = $('#cc-num').val();
+	if (isNaN(cc)){
+		$('#cc-num').before(ccNumberError);
+		return false;
 	} else if (cc.length > 16 || cc.length < 13 ){
 		$('#cc-num').before(ccNumberError);
 		return false;
-	} else if (typeof email === 'number'){
-		$('#cc-num').before(ccNumberError);
-		return false;
+	} else {
+		ccNumberError.hide();
+		return true;
 	}
 }
 // this makes sure a valid zip code is entered unless an error message will appear 
-function zipValidate(zip){
-	if (zip.length === 5){
+function zipValidate(){
+	zip = $('#zip').val();
+	if (isNaN(zip)){
+		$('#zip').before(ccZipError)
+		return false;
+	} else if (zip.length === 5){
 		return true;
+		ccZipError.hide();
 	} else {
-		$('#zip').before(ccZip)
+		$('#zip').before(ccZipError)
 		return false;
 	}
 }
 // this makes sure a valid cvv code is entered unless an error message will appear 
-function cvvValidate(cvv){
-	if (cvv.length > 3 && cvv.length <= 4){
+function cvvValidate(){
+	cvv = $('#cvv').val();
+	if (isNaN(cvv)){
+		$('#cvv').before(cvvError);
+		return false;
+	} else if (cvv.length === 3 || cvv.length === 4){
+		cvvError.hide()
 		return true;
 	} else {
 		$('#cvv').before(cvvError);
@@ -239,30 +232,39 @@ function cvvValidate(cvv){
 }
 // this function runs the validation functions and returns a boolean value
 function formValiation(){
-	return emailValidate(email) && nameValidate(name)&&
-	activityValidate(activity)&&ccValidate(cc)&&zipValidate(zip)&&
-	cvvValidate(cvv)
+	return checkValidEmail()&&
+	nameValidate()&&
+	activityValidate()&&
+	ccValidate()&&
+	zipValidate()&&
+	cvvValidate();
 }
 
-// this event runs a functions that checks the boolean of the form validation function and then checks if its true or false 
-// after that depending on what is the boolean value the if statement will run
-$('button').click(function(e){
-	e.preventDefault();
-	if (formValiation() === true){
-		$('button').unbind('click');
+
+// this event checks the value for the email and runs it in the check valid email function
+// this checks if the email is valid, if it is, it does not display the error message. else it will display the error message
+$('#mail').change(function(){
+	if (checkValidEmail() === false){
+		$('#mail').before(emailError);
+		emailError.show();
+	} else if (checkValidEmail() === true){
 		emailError.hide();
-		nameError.hide();
-		activityError.hide();
-		ccError.hide();
-		ccNumber.hide();
-		ccZip.hide();
-		cvvError.hide();
-	} else {
-		emailValidate(email);
-		nameValidate(name);
-		activityValidate(activity);
-		ccValidate(cc);
-		zipValidate(zip);
-		cvvValidate(cvv);
 	}
 });
+
+// this event triggers when it is clicked, after it is clicked it checks if the form validation function is true or false
+// if false, it checks all the valid input functions in which it will show an error message to the ones that needs to be fixed before submitting
+$('button').click(function(e){
+	if (formValiation() === false){
+		e.preventDefault();
+		checkValidEmail();
+		nameValidate();
+		activityValidate();
+		ccValidate();
+		zipValidate();
+		cvvValidate();
+	} else {
+		$('button').bind('click');
+	}
+});
+
