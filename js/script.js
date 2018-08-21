@@ -182,7 +182,7 @@ function nameValidate(){
 function activityValidate(){
 	let checkedBox = $('input:checked').length;
 	if (!checkedBox){
-		$('.activities').prepend(activityError);
+		$('.activities').append(activityError);
 		return false;
 	} else {
 		return true;
