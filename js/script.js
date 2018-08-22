@@ -246,6 +246,7 @@ function paymentValidation(){
 		paymentError.hide();
 		return true;
 	} else if (paymentValue === 'select_method'){
+		$('#payment').nextAll().hide();
 		$('#payment').after(paymentError);
 		return false;
 	} else {
