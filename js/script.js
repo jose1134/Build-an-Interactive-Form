@@ -152,7 +152,7 @@ const activityError = $('<span>Please choose at least one activity</span>').css(
 const ccNumberError = $('<span> Please enter a number that is at least 13-16 digits long</span>').css('color', 'red');
 const ccZipError = $('<span>Pleas enter a 5 digit zip code</span>').css('color', 'red');
 const cvvError = $('<span>Please enter a 3-4 digit cvv</span>').css('color', 'red');
-
+const paymentError = $('<span>Please Select A Method Of Payment</span>').css('color', 'red');
 
 //this function makes sure the email entered is a valid email
 //it also returns a boolean, in which if false the error message will appear 
@@ -185,59 +185,90 @@ function activityValidate(){
 		$('.activities').append(activityError);
 		return false;
 	} else {
+		activityError.hide();
 		return true;
 	}
 }
 // this makes sure a valid email is entered unless an error message will appear
 function ccValidate(){
-	let cc = $('#cc-num').val();
+	const paymentValue = $('#payment').val();
+	const cc = $('#cc-num').val();
 	if (isNaN(cc)){
 		$('#cc-num').before(ccNumberError);
 		return false;
-	} else if (cc.length > 16 || cc.length < 13 ){
-		$('#cc-num').before(ccNumberError);
-		return false;
-	} else {
+	} else if (cc.length < 16 && cc.length > 13 || paymentValue === 'paypal' || paymentValue === 'bitcoin'){
 		ccNumberError.hide();
 		return true;
+	}else if (cc.length > 16 || cc.length < 13 ){
+		$('#cc-num').before(ccNumberError);
+		return false;
 	}
 }
 // this makes sure a valid zip code is entered unless an error message will appear 
 function zipValidate(){
+	const paymentValue = $('#payment').val();
 	zip = $('#zip').val();
 	if (isNaN(zip)){
 		$('#zip').before(ccZipError)
 		return false;
-	} else if (zip.length === 5){
+	} else if (zip.length === 5 ||paymentValue === 'paypal' || paymentValue === 'bitcoin'){
 		return true;
 		ccZipError.hide();
-	} else {
+	} else if (zip.length > 5 || zip === ''){
 		$('#zip').before(ccZipError)
 		return false;
+	}else {
+		return true;
 	}
 }
 // this makes sure a valid cvv code is entered unless an error message will appear 
 function cvvValidate(){
+	const paymentValue = $('#payment').val();
 	cvv = $('#cvv').val();
 	if (isNaN(cvv)){
 		$('#cvv').before(cvvError);
 		return false;
-	} else if (cvv.length === 3 || cvv.length === 4){
+	} else if (cvv.length === 3 || cvv.length === 4 || paymentValue === 'paypal' || paymentValue === 'bitcoin'){
 		cvvError.hide()
 		return true;
-	} else {
+	} else if (cvv.length > 4 || cvv === ''){
 		$('#cvv').before(cvvError);
 		return false;
-	}	
+	}
 }
+
+// this function checks the payment selection and determines what selection is chosen
+// then it returns true or false for when the form validation needs to run
+// it also displays an error message for when its on select method 
+function paymentValidation(){
+	const paymentValue = $('#payment').val();
+	if (paymentValue === 'paypal' || paymentValue === 'bitcoin'){
+		paymentError.hide();
+		return true;
+	} else if (paymentValue === 'select_method'){
+		$('#payment').after(paymentError);
+		return false;
+	} else {
+		paymentError.hide();
+		return true;
+	}
+}
+
+// this event runs when the payment selection is changed 
+// an error message will pop up if it goes on select method
+$('#payment').change(function(){
+	paymentValidation();
+});
+
 // this function runs the validation functions and returns a boolean value
-function formValiation(){
+function formValiation(){	
 	return checkValidEmail()&&
 	nameValidate()&&
 	activityValidate()&&
 	ccValidate()&&
 	zipValidate()&&
-	cvvValidate();
+	cvvValidate()&&
+	paymentValidation();
 }
 
 
@@ -252,6 +283,10 @@ $('#mail').change(function(){
 	}
 });
 
+
+
+
+
 // this event triggers when it is clicked, after it is clicked it checks if the form validation function is true or false
 // if false, it checks all the valid input functions in which it will show an error message to the ones that needs to be fixed before submitting
 $('button').click(function(e){
@@ -264,7 +299,18 @@ $('button').click(function(e){
 		zipValidate();
 		cvvValidate();
 	} else {
-		$('button').bind('click');
+		$('button').bind('click');	
 	}
 });
+
+
+
+
+
+
+
+
+
+
+
 
