@@ -212,8 +212,8 @@ function zipValidate(){
 		$('#zip').before(ccZipError)
 		return false;
 	} else if (zip.length === 5 ||paymentValue === 'paypal' || paymentValue === 'bitcoin'){
-		return true;
 		ccZipError.hide();
+		return true;
 	} else if (zip.length > 5 || zip === ''){
 		$('#zip').before(ccZipError)
 		return false;
